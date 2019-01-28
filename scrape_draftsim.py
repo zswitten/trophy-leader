@@ -6,6 +6,7 @@ from collections import Counter
 base_url = 'https://draftsim.com/draft-log.php?id='
 
 def get_draft(i):
+    # Call this for all i between 
     try:
         result = requests.get(make_url(i))
         text = result.text
@@ -43,31 +44,6 @@ def get_cardset(mtgset):
     cards = json.loads(result.text)
     cardnames = set([c['name'].replace(' ', '_') for c in cards['cards']])
     return cardnames
-
-def verify_drafts(drafts, mtgset):
-    cardset = get_cardset(mtgset)
-    verified_drafts = [d for d in drafts if draft_contains_valid_cards(d, cardset)]
-    return verified_drafts
-
-def draft_contains_valid_cards(draft, cardset):
-    pickset = set()
-    for picklist in draft['picks']:
-        for card in picklist:
-            pickset.add(card)
-    mistaken_cards = []
-    for card in pickset:
-        if card not in cardset:
-            mistaken_cards.append(card)
-    import pdb; pdb.set_trace()
-    return len(mistaken_cards) < 20
-
-def get_cards(drafts):
-    cards = Counter()
-    for draft in drafts:
-        for player in draft['picks']:
-            for card in player:
-                cards[card] += 1
-    return cards
 
 def parse_draft_to_flooey_format(draft, cardset):
     players = draft['picks']
