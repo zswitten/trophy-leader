@@ -6,7 +6,7 @@ from collections import Counter
 base_url = 'https://draftsim.com/draft-log.php?id='
 
 def get_draft(i):
-    # Call this for all i between 
+    # Call this for all i 
     try:
         result = requests.get(make_url(i))
         text = result.text
@@ -37,26 +37,8 @@ def get_format(content):
 def make_url(i):
     return base_url + str(i)
 
-def get_cardset(mtgset):
-    base_url = 'http://mtgjson.com/json/'
-    url = base_url + mtgset + '.json'
-    result = requests.get(url)
-    cards = json.loads(result.text)
-    cardnames = set([c['name'].replace(' ', '_') for c in cards['cards']])
-    return cardnames
-
-def parse_draft_to_flooey_format(draft, cardset):
-    players = draft['picks']
-    cards_per_pack = int(len(players[0]) / 3)
-    packs = []
-    for pack_index in range(3):
-        choices = []
-        for pick_index in range(cards_per_pack):
-            options = []
-            idx = pick_index
-            while idx < cards_per_pack:
-                options.append(players[(idx - pick_index) % 8][idx])
-                idx += 1
-            choices.append(options)
-        packs.append(choices)
-    return packs
+DRAFT_MIN = 0
+DRAFT_MAX = 10000
+for i in range(DRAFT_MIN, DRAFT_MAX):
+    draft = get_draft(i)
+    json.dump(draft, open('draft_'+str(i), 'w'))
