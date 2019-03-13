@@ -37,8 +37,7 @@ def get_format(content):
 def make_url(i):
     return base_url + str(i)
 
-DRAFT_MIN = 0
-DRAFT_MAX = 10000
-for i in range(DRAFT_MIN, DRAFT_MAX):
-    draft = get_draft(i)
-    json.dump(draft, open('draft_'+str(i), 'w'))
+def save_drafts(draft_min, draft_max):
+    for i in range(draft_min, draft_max):
+        draft = get_draft(i)
+        json.dump(draft, open('draft_'+str(i), 'w'))
